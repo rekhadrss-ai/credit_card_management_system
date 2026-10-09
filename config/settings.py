@@ -146,4 +146,3 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Credit Card Payment System API',
     'VERSION': '1.0.0',
 }
-

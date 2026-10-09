@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import random
 from decimal import Decimal
@@ -21,6 +22,12 @@ engine = create_engine(DB_URL)
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 app = FastAPI(title="Payment Service")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:8000", "http://localhost:8000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 bearer = HTTPBearer()
 
 
@@ -38,6 +45,19 @@ class PaymentRequest(BaseModel):
     card_id: int
     amount: Decimal = Field(gt=0, max_digits=10, decimal_places=2)
     description: str = ""
+
+@app.get("/", tags=["home"], summary="Home")
+def home():
+    return {
+        "message": "Credit Card Payment API is running",
+        "service": "FastAPI Payment Service",
+        "version": "1.0.0",
+        "docs": "/docs",
+    }
+
+@app.get("/health", tags=["home"], summary="Health check")
+def health():
+    return {"status": "ok"}
 
 
 @app.post("/api/payments/")
